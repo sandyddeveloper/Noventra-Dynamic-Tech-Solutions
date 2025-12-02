@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "../../components/shared/DataTable";
 import type { ColumnDef, SortDirection } from "../../types/datatable.types";
 
@@ -28,7 +28,6 @@ export default function EmployeesPage() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // TODO: replace with real API call
         const fetchData = async () => {
             setLoading(true);
             // const res = await api.getEmployees({ page, pageSize, search, sortBy, sortDirection });
