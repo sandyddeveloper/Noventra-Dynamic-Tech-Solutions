@@ -1,13 +1,77 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>noventra-dts-frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Basic -->
+  <title>Noventra Dynamic Tech Solutions – Command Center</title>
+  <meta name="description"
+    content="Noventra Dynamic Tech Solutions – a futuristic company management platform for employees, projects, attendance, payments and real-time insights." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="robots" content="index,follow" />
+  <meta name="author" content="Noventra Dynamic Tech Solutions" />
+
+  <!-- Favicon & app icons -->
+  <!-- Use your exported logo files here -->
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  <link rel="alternate icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0068f7" />
+
+  <!-- PWA / manifest (optional, but recommended) -->
+  <!-- Create /public/manifest.webmanifest to match these values -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- Theming -->
+  <meta name="theme-color" content="#020817" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="light dark" />
+
+  <!-- Open Graph (social sharing) -->
+  <meta property="og:title" content="Noventra Dynamic Tech Solutions – Command Center" />
+  <meta property="og:description"
+    content="A futuristic command center for managing employees, projects, tasks, attendance and payments in one place." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://noventra.example.com/" />
+  <meta property="og:image" content="https://noventra.example.com/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Noventra Dynamic Tech Solutions – Command Center" />
+  <meta name="twitter:description"
+    content="Control your entire organization with Noventra’s advanced company management system." />
+  <meta name="twitter:image" content="https://noventra.example.com/og-image.png" />
+
+  <!-- Performance hints -->
+  <!-- Preconnect to fonts / APIs if you use them -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+
+  <!-- Vite will inject compiled CSS/JS via main.tsx import -->
+</head>
+
+<body class="antialiased bg-slate-950 text-slate-100">
+  <noscript>
+    <div style="
+          padding: 1rem;
+          text-align: center;
+          background: #020817;
+          color: #f8fafc;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        ">
+      Noventra Dynamic Tech Solutions requires JavaScript to run. Please enable JavaScript in your
+      browser settings.
+    </div>
+  </noscript>
+
+  <div id="root"></div>
+
+  <!-- Vite entry -->
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
