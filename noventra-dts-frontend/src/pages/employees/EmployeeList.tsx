@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { DataTable, type ColumnDef, type SortDirection } from "../../components/shared/DataTable";
+import  { useEffect, useState } from "react";
+import { DataTable } from "../../components/shared/DataTable";
+import type { ColumnDef, SortDirection } from "../../types/datatable.types";
 
 interface Employee {
     id: string;
