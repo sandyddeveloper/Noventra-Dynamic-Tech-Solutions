@@ -1,0 +1,46 @@
+import type { TimelineItem } from "../types/timeline.types";
+
+export const mockTimeline: TimelineItem[] = [
+  {
+    id: 1,
+    title: "Harini Rao clocked in",
+    description: "Attendance marked from Chennai HQ (geo-verified).",
+    timestamp: "09:05 AM",
+    groupLabel: "Today",
+    category: "attendance",
+    status: "success",
+    actorName: "Harini Rao",
+    actorRole: "Super Admin",
+    avatarInitials: "HR",
+    meta: "On-site",
+  },
+  {
+    id: 2,
+    title: "Sprint 14 created for Project Nova",
+    description: "8 tasks added, due next Friday.",
+    timestamp: "08:42 AM",
+    groupLabel: "Today",
+    category: "project",
+    status: "default",
+    meta: "Sprint 14",
+  },
+  {
+    id: 3,
+    title: "Payment released to intern Aarav",
+    description: "₹12,500 for completed tasks in Data & AI team.",
+    timestamp: "Yesterday • 06:10 PM",
+    groupLabel: "Yesterday",
+    category: "payment",
+    status: "success",
+    meta: "₹12,500",
+  },
+  {
+    id: 4,
+    title: "System maintenance window scheduled",
+    description: "Planned downtime on Sunday, 01:00–02:00 AM IST.",
+    timestamp: "Dec 1 • 10:00 AM",
+    groupLabel: "This week",
+    category: "system",
+    status: "warning",
+  },
+];
