@@ -57,7 +57,7 @@ export default function Sidebar({
             onClick={onToggleCollapse}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full border
                        border-slate-200 bg-white text-slate-600 shadow-sm
-                       hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                       hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 "
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
