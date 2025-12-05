@@ -1,4 +1,4 @@
-import React, {
+import {
   useMemo,
   useState,
   useEffect,
@@ -412,64 +412,64 @@ export function DataTable<T>({
               </button>
 
               {showSearchInput && (
-  <div className="absolute right-0 top-11 z-40 w-80 rounded-2xl border border-slate-700/80 bg-slate-900/95 p-3 text-xs text-slate-100 shadow-2xl shadow-black/50 backdrop-blur">
-    {/* Header */}
-    <div className="mb-2 flex items-center justify-between gap-2">
-      <div className="flex flex-col">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-          Global search
-        </span>
-        <span className="text-[11px] text-slate-500">
-          Search across all visible columns
-        </span>
-      </div>
-      <button
-        type="button"
-        onClick={() => setShowSearchInput(false)}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100"
-      >
-        <X size={13} />
-      </button>
-    </div>
+                <div className="absolute right-0 top-11 z-40 w-80 rounded-2xl border border-slate-700/80 bg-slate-900/95 p-3 text-xs text-slate-100 shadow-2xl shadow-black/50 backdrop-blur">
+                  {/* Header */}
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                        Global search
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        Search across all visible columns
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSearchInput(false)}
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-slate-950 text-slate-400 hover:border-slate-500 hover:bg-slate-800 hover:text-slate-100"
+                    >
+                      <X size={13} />
+                    </button>
+                  </div>
 
-    {/* Input */}
-    <div className="relative">
-      <SearchIcon
-        size={14}
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
-      />
-      <input
-        ref={searchInputRef}
-        value={effectiveSearchValue}
-        onChange={(e) => handleSearchChange(e.target.value)}
-        placeholder={searchPlaceholder}
-        className="w-full rounded-full border border-slate-700 bg-slate-950 py-2 pl-8 pr-16 text-xs text-slate-100 outline-none placeholder:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
-      />
-      {/* clear button */}
-      {effectiveSearchValue && (
-        <button
-          type="button"
-          onClick={() => handleSearchChange("")}
-          className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-200"
-        >
-          <X size={11} />
-        </button>
-      )}
-      {/* shortcut hint pill */}
-      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-800 px-2 py-[2px] text-[9px] font-medium tracking-wide text-slate-300">
-        ⌘K
-      </span>
-    </div>
+                  {/* Input */}
+                  <div className="relative">
+                    <SearchIcon
+                      size={14}
+                      className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                    />
+                    <input
+                      ref={searchInputRef}
+                      value={effectiveSearchValue}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      placeholder={searchPlaceholder}
+                      className="w-full rounded-full border border-slate-700 bg-slate-950 py-2 pl-8 pr-16 text-xs text-slate-100 outline-none placeholder:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40"
+                    />
+                    {/* clear button */}
+                    {effectiveSearchValue && (
+                      <button
+                        type="button"
+                        onClick={() => handleSearchChange("")}
+                        className="absolute right-7 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-200"
+                      >
+                        <X size={11} />
+                      </button>
+                    )}
+                    {/* shortcut hint pill */}
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-slate-800 px-2 py-[2px] text-[9px] font-medium tracking-wide text-slate-300">
+                      ⌘K
+                    </span>
+                  </div>
 
-    {/* Helper text */}
-    <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
-      <span>Press Enter to apply filters faster</span>
-      <span className="rounded-full bg-slate-800/80 px-2 py-[2px] text-[9px] text-slate-300">
-        Searching {visibleColumnDefs.length} columns
-      </span>
-    </div>
-  </div>
-)}
+                  {/* Helper text */}
+                  <div className="mt-2 flex items-center justify-between text-[10px] text-slate-500">
+                    <span>Press Enter to apply filters faster</span>
+                    <span className="rounded-full bg-slate-800/80 px-2 py-[2px] text-[9px] text-slate-300">
+                      Searching {visibleColumnDefs.length} columns
+                    </span>
+                  </div>
+                </div>
+              )}
 
             </div>
           )}
@@ -684,214 +684,218 @@ export function DataTable<T>({
         </div>
       )}
 
-    
+
 
       {/* TABLE WRAPPER */}
-      <div className="relative -mx-2 overflow-x-auto overflow-y-hidden rounded-2xl border border-slate-800 bg-slate-950/40 scroll-smooth no-scrollbar sm:-mx-4">
-        <table className="min-w-full divide-y divide-slate-800 text-left">
-          <thead className="sticky top-0 z-10 bg-slate-950/95 text-xs font-semibold uppercase tracking-wide text-slate-400 backdrop-blur">
-            <tr>
-              {visibleColumnDefs.map((col) => {
-                const align =
-                  col.align === "center"
-                    ? "text-center"
-                    : col.align === "right"
-                      ? "text-right"
-                      : "text-left";
-
-                const isSorted = sortBy === col.id;
-
-                const responsiveClassNames = [
-                  col.hideOnMobile ? "hidden md:table-cell" : "",
-                  col.hideOnTablet ? "hidden lg:table-cell" : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ");
-
-                return (
-                  <th
-                    key={col.id}
-                    scope="col"
-                    className={[
-                      sizeClasses.header,
-                      "relative whitespace-nowrap",
-                      align,
-                      col.headerClassName || "",
-                      responsiveClassNames,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      {col.sortable ? (
-                        <button
-                          type="button"
-                          onClick={() => handleSortToggle(col)}
-                          className="inline-flex items-center gap-1 text-[11px] font-semibold tracking-wide text-slate-200 hover:text-white"
-                        >
-                          <span>{col.header}</span>
-                          <ArrowUpDown
-                            size={13}
-                            className={
-                              isSorted
-                                ? sortDirection === "asc"
-                                  ? "rotate-180 text-blue-400"
-                                  : "text-blue-400"
-                                : "text-slate-500"
-                            }
-                          />
-                        </button>
-                      ) : (
-                        <span className="text-[11px] font-semibold text-slate-200">
-                          {col.header}
-                        </span>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenHeaderMenuId((prev) =>
-                            prev === col.id ? null : col.id,
-                          )
-                        }
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-500 hover:bg-slate-800 hover:text-slate-100"
-                      >
-                        <MoreVertical size={14} />
-                      </button>
-
-                      {openHeaderMenuId === col.id && (
-                        <div className="absolute right-0 top-full z-40 mt-2 w-40 rounded-xl border border-slate-700 bg-slate-900 py-1 text-[11px] text-slate-100 shadow-xl">
-                          {col.sortable && (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleSortExplicit(col, "asc")
-                                }
-                                className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
-                              >
-                                Sort ascending
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  handleSortExplicit(col, "desc")
-                                }
-                                className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
-                              >
-                                Sort descending
-                              </button>
-                              <div className="my-1 border-t border-slate-700" />
-                            </>
-                          )}
-
-                          {enableColumnVisibility && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setOpenHeaderMenuId(null);
-                                toggleColumnVisibility(col.id);
-                              }}
-                              className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
-                            >
-                              Hide column
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-slate-800 bg-slate-950 text-slate-100">
-            {isLoading ? (
+      <div
+        className="
+    relative w-full overflow-x-auto overflow-y-hidden rounded-2xl border border-slate-800 bg-slate-950/40 scroll-smooth">
+        <div className="min-w-[100px]">
+          <table className="w-full divide-y divide-slate-800 text-left">
+            <thead className="sticky top-0 z-10 bg-slate-950/95 text-xs font-semibold uppercase tracking-wide text-slate-400 backdrop-blur">
               <tr>
-                <td
-                  colSpan={visibleColumnCount}
-                  className="px-6 py-10 text-center text-sm text-slate-400"
-                >
-                  <div className="inline-flex items-center gap-3 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-xs shadow-sm">
-                    <span className="h-2 w-2 animate-ping rounded-full bg-blue-500" />
-                    <span>Loading data… Please wait.</span>
-                  </div>
-                </td>
-              </tr>
-            ) : processedData.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={visibleColumnCount}
-                  className="px-6 py-12 text-center text-sm text-slate-400"
-                >
-                  {emptyMessage}
-                </td>
-              </tr>
-            ) : (
-              processedData.map((row, index) => {
-                const rowId =
-                  getRowId?.(row, index) ??
-                  (index as string | number);
+                {visibleColumnDefs.map((col) => {
+                  const align =
+                    col.align === "center"
+                      ? "text-center"
+                      : col.align === "right"
+                        ? "text-right"
+                        : "text-left";
 
-                return (
-                  <tr
-                    key={rowId}
-                    onClick={() => onRowClick?.(row)}
-                    className={[
-                      sizeClasses.row,
-                      "transition-colors odd:bg-slate-950 even:bg-slate-900/80 hover:bg-slate-900",
-                      onRowClick ? "cursor-pointer" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
-                    {visibleColumnDefs.map((col) => {
-                      const align =
-                        col.align === "center"
-                          ? "text-center"
-                          : col.align === "right"
-                            ? "text-right"
-                            : "text-left";
+                  const isSorted = sortBy === col.id;
 
-                      const responsiveClassNames = [
-                        col.hideOnMobile ? "hidden md:table-cell" : "",
-                        col.hideOnTablet ? "hidden lg:table-cell" : "",
+                  const responsiveClassNames = [
+                    col.hideOnMobile ? "hidden md:table-cell" : "",
+                    col.hideOnTablet ? "hidden lg:table-cell" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ");
+
+                  return (
+                    <th
+                      key={col.id}
+                      scope="col"
+                      className={[
+                        sizeClasses.header,
+                        "relative whitespace-nowrap pr-2",
+                        align,
+                        col.headerClassName || "",
+                        responsiveClassNames,
                       ]
                         .filter(Boolean)
-                        .join(" ");
+                        .join(" ")}
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        {col.sortable ? (
+                          <button
+                            type="button"
+                            onClick={() => handleSortToggle(col)}
+                            className="inline-flex items-center gap-1 text-[11px] font-semibold tracking-wide text-slate-200 hover:text-white"
+                          >
+                            <span>{col.header}</span>
+                            <ArrowUpDown
+                              size={13}
+                              className={
+                                isSorted
+                                  ? sortDirection === "asc"
+                                    ? "rotate-180 text-blue-400"
+                                    : "text-blue-400"
+                                  : "text-slate-500"
+                              }
+                            />
+                          </button>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-slate-200">
+                            {col.header}
+                          </span>
+                        )}
 
-                      const value = col.cell
-                        ? col.cell(row)
-                        : col.field
-                          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          (row as any)[col.field]
-                          : null;
-
-                      return (
-                        <td
-                          key={col.id}
-                          className={[
-                            sizeClasses.cell,
-                            align,
-                            "whitespace-nowrap text-slate-100",
-                            "max-w-xs md:max-w-none truncate",
-                            col.className || "",
-                            responsiveClassNames,
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenHeaderMenuId((prev) =>
+                              prev === col.id ? null : col.id,
+                            )
+                          }
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-500 hover:bg-slate-800 hover:text-slate-100"
                         >
-                          {value}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                          <MoreVertical size={14} />
+                        </button>
+
+                        {openHeaderMenuId === col.id && (
+                          <div className="absolute right-0 top-full z-40 mt-2 w-40 rounded-xl border border-slate-700 bg-slate-900 py-1 text-[11px] text-slate-100 shadow-xl">
+                            {col.sortable && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleSortExplicit(col, "asc")
+                                  }
+                                  className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
+                                >
+                                  Sort ascending
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleSortExplicit(col, "desc")
+                                  }
+                                  className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
+                                >
+                                  Sort descending
+                                </button>
+                                <div className="my-1 border-t border-slate-700" />
+                              </>
+                            )}
+
+                            {enableColumnVisibility && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setOpenHeaderMenuId(null);
+                                  toggleColumnVisibility(col.id);
+                                }}
+                                className="flex w-full items-center px-3 py-1.5 hover:bg-slate-800"
+                              >
+                                Hide column
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-slate-800 bg-slate-950 text-slate-100">
+              {isLoading ? (
+                <tr>
+                  <td
+                    colSpan={visibleColumnCount}
+                    className="px-6 py-10 text-center text-sm text-slate-400"
+                  >
+                    <div className="inline-flex items-center gap-3 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-xs shadow-sm">
+                      <span className="h-2 w-2 animate-ping rounded-full bg-blue-500" />
+                      <span>Loading data… Please wait.</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : processedData.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={visibleColumnCount}
+                    className="px-6 py-12 text-center text-sm text-slate-400"
+                  >
+                    {emptyMessage}
+                  </td>
+                </tr>
+              ) : (
+                processedData.map((row, index) => {
+                  const rowId =
+                    getRowId?.(row, index) ??
+                    (index as string | number);
+
+                  return (
+                    <tr
+                      key={rowId}
+                      onClick={() => onRowClick?.(row)}
+                      className={[
+                        sizeClasses.row,
+                        "transition-colors odd:bg-slate-950 even:bg-slate-900/80 hover:bg-slate-900",
+                        onRowClick ? "cursor-pointer" : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      {visibleColumnDefs.map((col) => {
+                        const align =
+                          col.align === "center"
+                            ? "text-center"
+                            : col.align === "right"
+                              ? "text-right"
+                              : "text-left";
+
+                        const responsiveClassNames = [
+                          col.hideOnMobile ? "hidden md:table-cell" : "",
+                          col.hideOnTablet ? "hidden lg:table-cell" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ");
+
+                        const value = col.cell
+                          ? col.cell(row)
+                          : col.field
+                            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (row as any)[col.field]
+                            : null;
+
+                        return (
+                          <td
+                            key={col.id}
+                            className={[
+                              sizeClasses.cell,
+                              align,
+                              "whitespace-nowrap text-slate-100",
+                              "max-w-xs md:max-w-none truncate",
+                              col.className || "",
+                              responsiveClassNames,
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                          >
+                            {value}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* BOTTOM BAR: Info + Pagination */}

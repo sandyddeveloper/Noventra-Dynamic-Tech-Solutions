@@ -73,7 +73,7 @@ export const sidebarLinks: SidebarItem[] = [
     roles: ["super_admin", "hr"],
   },
   {
-    label: "Clients & Billing",
+    label: "Clients & Management",
     path: "/clients",
     icon: CreditCard,
     roles: ["super_admin", "team_lead"],

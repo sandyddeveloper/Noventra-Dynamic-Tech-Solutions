@@ -7,7 +7,7 @@ import {
     ArrowRight,
     X,
 } from "lucide-react";
-import type { NotificationItem, NotificationType } from "../../../types/notification";
+import type { NotificationItem, NotificationType } from "../../../types/notification.types";
 
 
 const mockNotifications: NotificationItem[] = [

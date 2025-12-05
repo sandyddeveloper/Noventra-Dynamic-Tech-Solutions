@@ -54,3 +54,10 @@ export interface DataTableProps<T> {
   enableFilters?: boolean;
   enableExport?: boolean;
 }
+
+
+export interface AttendanceLocationState {
+  employeeId?: string;
+  employeeName?: string;
+  employeeEmail?: string;
+}
