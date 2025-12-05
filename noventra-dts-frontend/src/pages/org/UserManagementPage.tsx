@@ -10,15 +10,19 @@ import {
     Eye,
     BadgeCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 import type {
     ColumnDef,
     SortDirection,
 } from "../../types/datatable.types";
-import type { Employee } from "../../types/employee.types"; import { DataTable } from "../../components/shared/DataTable";
+import type { Employee } from "../../types/employee.types";
+
+import { DataTable } from "../../components/shared/DataTable";
 import { EmployeeFormModal } from "../../components/common/modal/EmployeeFormModal";
 import { EmployeeQuickViewDrawer } from "../../components/employee/EmployeeQuickViewDrawer";
-import { useNavigate } from "react-router-dom";
-;
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { EmployeeListCards } from "./EmployeeListCards";
 
 // ---- Mock data ----
 const mockEmployees: Employee[] = [
@@ -108,6 +112,8 @@ const workModeChip: Record<Employee["workMode"], string> = {
 // ------------- Page -------------
 const UserManagementPage: React.FC = () => {
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
+
     const [employees, setEmployees] =
         useState<Employee[]>(mockEmployees);
     const [search, setSearch] = useState("");
@@ -152,6 +158,11 @@ const UserManagementPage: React.FC = () => {
         });
     };
 
+    const openProfileForEmployee = (emp: Employee) => {
+        navigate(`/profile/${emp.code}`, {
+            state: { employee: emp },
+        });
+    };
 
     // ---- table data processing ----
     const filteredEmployees = useMemo(() => {
@@ -270,6 +281,18 @@ const UserManagementPage: React.FC = () => {
         setSelectedIds([]);
     };
 
+    const handleDeleteSingle = (row: Employee) => {
+        if (
+            !window.confirm(
+                `Delete employee "${row.name}"? Attendance / history will not be removed.`,
+            )
+        ) {
+            return;
+        }
+        setEmployees((prev) => prev.filter((emp) => emp.id !== row.id));
+        setSelectedIds((prev) => prev.filter((id) => id !== row.id));
+    };
+
     // ---- DataTable columns ----
     const columns: ColumnDef<Employee>[] = [
         {
@@ -318,9 +341,7 @@ const UserManagementPage: React.FC = () => {
                             type="button"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/profile/${row.code}`, {
-                                    state: { employee: row },
-                                });
+                                openProfileForEmployee(row);
                             }}
                             className="text-left text-xs font-medium text-blue-300 hover:underline"
                         >
@@ -436,18 +457,7 @@ const UserManagementPage: React.FC = () => {
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (
-                                window.confirm(
-                                    `Delete employee "${row.name}"? Attendance / history will not be removed.`,
-                                )
-                            ) {
-                                setEmployees((prev) =>
-                                    prev.filter((emp) => emp.id !== row.id),
-                                );
-                                setSelectedIds((prev) =>
-                                    prev.filter((id) => id !== row.id),
-                                );
-                            }
+                            handleDeleteSingle(row);
                         }}
                         className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-red-300 hover:bg-red-900/60"
                         title="Delete employee"
@@ -483,7 +493,8 @@ const UserManagementPage: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    {selectedIds.length > 0 && (
+                    {/* bulk delete only makes sense on desktop (table with checkboxes) */}
+                    {!isMobile && selectedIds.length > 0 && (
                         <button
                             type="button"
                             onClick={bulkDelete}
@@ -551,7 +562,7 @@ const UserManagementPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* filter bar */}
+            {/* filter bar + search */}
             <div className="flex flex-col gap-2 rounded-2xl border border-slate-800 bg-slate-950 px-3 py-3 text-xs">
                 <div className="flex flex-wrap items-center gap-2">
                     {/* role filters */}
@@ -566,8 +577,8 @@ const UserManagementPage: React.FC = () => {
                                         setPage(1);
                                     }}
                                     className={`rounded-full px-2 py-[3px] text-[11px] ${roleFilter === role
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-slate-900 text-slate-300 hover:bg-slate-800"
                                         }`}
                                 >
                                     {role}
@@ -587,8 +598,8 @@ const UserManagementPage: React.FC = () => {
                                     setPage(1);
                                 }}
                                 className={`rounded-full px-2 py-[3px] text-[11px] ${statusFilter === status
-                                    ? "bg-emerald-600 text-white"
-                                    : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                                        ? "bg-emerald-600 text-white"
+                                        : "bg-slate-900 text-slate-300 hover:bg-slate-800"
                                     }`}
                             >
                                 {status}
@@ -615,45 +626,75 @@ const UserManagementPage: React.FC = () => {
                             ))}
                         </select>
                     </div>
+                </div>
 
-                    {/* search – uses DataTable’s global search */}
+                {/* search input – works for both cards & table */}
+                <div className="mt-2 w-full sm:mt-0 sm:w-auto sm:self-end">
+                    <input
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                        }}
+                        placeholder="Search by name, email, code..."
+                        className="w-full rounded-full border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 outline-none placeholder:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 sm:w-64"
+                    />
                 </div>
             </div>
 
-            {/* main table */}
-            <DataTable<Employee>
-                columns={columns}
-                data={pageRows}
-                totalItems={totalItems}
-                page={page}
-                pageSize={pageSize}
-                pageSizeOptions={[5, 10, 25, 50]}
-                sortBy={sortBy}
-                sortDirection={sortDirection}
-                onSortChange={(col, dir) => {
-                    setSortBy(col);
-                    setSortDirection(dir);
-                    setPage(1);
-                }}
-                enableGlobalSearch
-                globalSearchValue={search}
-                onGlobalSearchChange={(v) => {
-                    setSearch(v);
-                    setPage(1);
-                }}
-                isLoading={false}
-                emptyMessage="No employees match your filters."
-                onPageChange={setPage}
-                onPageSizeChange={(s) => {
-                    setPageSize(s);
-                    setPage(1);
-                }}
-                getRowId={(row) => row.id}
-                size="md"
-                enableColumnVisibility
-                enableExport
-                enableFilters={false}
-            />
+            {/* MOBILE: card list (no DataTable) */}
+            {isMobile && (
+                <div className="md:hidden">
+                    <EmployeeListCards
+                        employees={filteredEmployees}
+                        title="Employees"
+                        description="Tap an employee to open quick view or actions."
+                        onOpenQuickView={(emp) => setQuickViewEmployee(emp)}
+                        onOpenProfile={openProfileForEmployee}
+                        onOpenAttendance={openAttendanceForEmployee}
+                        onOpenProjects={openProjectsForEmployee}
+                        onEdit={(emp) => {
+                            setEditingEmployee(emp);
+                            setFormOpen(true);
+                        }}
+                        onDelete={handleDeleteSingle}
+                    />
+                </div>
+            )}
+
+            {/* DESKTOP: DataTable (no cards) */}
+            {!isMobile && (
+                <div className="hidden md:block">
+                    <DataTable<Employee>
+                        columns={columns}
+                        data={pageRows}
+                        totalItems={totalItems}
+                        page={page}
+                        pageSize={pageSize}
+                        pageSizeOptions={[5, 10, 25, 50]}
+                        sortBy={sortBy}
+                        sortDirection={sortDirection}
+                        onSortChange={(col, dir) => {
+                            setSortBy(col);
+                            setSortDirection(dir);
+                            setPage(1);
+                        }}
+                        enableGlobalSearch={false}
+                        isLoading={false}
+                        emptyMessage="No employees match your filters."
+                        onPageChange={setPage}
+                        onPageSizeChange={(s) => {
+                            setPageSize(s);
+                            setPage(1);
+                        }}
+                        getRowId={(row) => row.id}
+                        size="md"
+                        enableColumnVisibility
+                        enableExport
+                        enableFilters={false}
+                    />
+                </div>
+            )}
 
             {/* modals */}
             <EmployeeFormModal
@@ -673,7 +714,6 @@ const UserManagementPage: React.FC = () => {
                 onOpenAttendance={openAttendanceForEmployee}
                 onOpenProjects={openProjectsForEmployee}
             />
-
         </div>
     );
 };

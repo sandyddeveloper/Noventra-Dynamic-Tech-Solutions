@@ -1,3 +1,4 @@
+// src/components/projects/ProjectManagementTable.tsx
 import React from "react";
 import type { ColumnDef, SortDirection } from "../../types/datatable.types";
 import type { Project } from "../../types/project.types";
@@ -9,6 +10,7 @@ import {
   StarOff,
 } from "lucide-react";
 import { DataTable } from "../../components/shared/DataTable";
+import { ProjectListCards } from "./ProjectListCards";
 
 interface ProjectManagementTableProps {
   projects: Project[];
@@ -57,16 +59,39 @@ export const ProjectManagementTable: React.FC<ProjectManagementTableProps> = ({
         </button>
       ),
     },
-    { id: "name", header: "Project", field: "name", sortable: true },
-    { id: "code", header: "Code", field: "code", sortable: true },
-    { id: "owner", header: "Owner", field: "owner", sortable: true },
+    {
+      id: "name",
+      header: "Project",
+      field: "name",
+      sortable: true,
+      className: "max-w-[180px]",
+    },
+    {
+      id: "code",
+      header: "Code",
+      field: "code",
+      sortable: true,
+      hideOnMobile: true,
+    },
+    {
+      id: "owner",
+      header: "Owner",
+      field: "owner",
+      sortable: true,
+      hideOnMobile: true,
+    },
     {
       id: "assignee",
-      header: "Assigned To",
+      header: "Assigned",
       field: "assignee",
       sortable: true,
     },
-    { id: "status", header: "Status", field: "status", sortable: true },
+    {
+      id: "status",
+      header: "Status",
+      field: "status",
+      sortable: true,
+    },
     {
       id: "priority",
       header: "Priority",
@@ -76,7 +101,7 @@ export const ProjectManagementTable: React.FC<ProjectManagementTableProps> = ({
     },
     {
       id: "dueDate",
-      header: "Due Date",
+      header: "Due",
       field: "dueDate",
       sortable: true,
       hideOnMobile: true,
@@ -125,7 +150,7 @@ export const ProjectManagementTable: React.FC<ProjectManagementTableProps> = ({
     },
   ];
 
-  // client-side filtering / sorting
+  // client-side filtering / sorting (for TABLE view)
   const filtered = React.useMemo(() => {
     let rows = [...projects];
     if (search.trim()) {
@@ -153,7 +178,7 @@ export const ProjectManagementTable: React.FC<ProjectManagementTableProps> = ({
     rows.sort((a, b) => {
       const fa = a.isFavorite ? 1 : 0;
       const fb = b.isFavorite ? 1 : 0;
-      return fb - fa; // favorite first
+      return fb - fa;
     });
 
     return rows;
@@ -169,41 +194,56 @@ export const ProjectManagementTable: React.FC<ProjectManagementTableProps> = ({
         <h2 className="text-sm font-semibold text-slate-100">
           Project Management
         </h2>
-        <span className="text-[11px] text-slate-500">
+        <span className="text-[11px] text-slate-500 hidden md:inline">
           Click a row to open quick view
         </span>
       </div>
 
-      <DataTable<Project>
-        columns={columns}
-        data={pageData}
-        totalItems={totalItems}
-        page={page}
-        pageSize={pageSize}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        onSortChange={(col, dir) => {
-          setSortBy(col);
-          setSortDirection(dir);
-          setPage(1);
-        }}
-        enableGlobalSearch
-        globalSearchValue={search}
-        onGlobalSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
-        isLoading={false}
-        emptyMessage="No projects found."
-        onPageChange={setPage}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPage(1);
-        }}
-        getRowId={(row) => row.id}
-        size="md"
-        onRowClick={(row) => onOpenDetails(row)}
-      />
+      {/* MOBILE: card list view only */}
+      <div className="block md:hidden">
+        <ProjectListCards
+          projects={projects}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onReassign={onReassign}
+          onToggleFavorite={onToggleFavorite}
+          onOpenDetails={onOpenDetails}
+        />
+      </div>
+
+      {/* DESKTOP / TABLET: table view only */}
+      <div className="hidden md:block w-full max-w-full">
+        <DataTable<Project>
+          columns={columns}
+          data={pageData}
+          totalItems={totalItems}
+          page={page}
+          pageSize={pageSize}
+          sortBy={sortBy}
+          sortDirection={sortDirection}
+          onSortChange={(col, dir) => {
+            setSortBy(col);
+            setSortDirection(dir);
+            setPage(1);
+          }}
+          enableGlobalSearch
+          globalSearchValue={search}
+          onGlobalSearchChange={(v) => {
+            setSearch(v);
+            setPage(1);
+          }}
+          isLoading={false}
+          emptyMessage="No projects found."
+          onPageChange={setPage}
+          onPageSizeChange={(s) => {
+            setPageSize(s);
+            setPage(1);
+          }}
+          getRowId={(row) => row.id}
+          size="md"
+          onRowClick={(row) => onOpenDetails(row)}
+        />
+      </div>
     </div>
   );
 };

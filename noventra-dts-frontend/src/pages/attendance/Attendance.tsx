@@ -12,6 +12,8 @@ import {
 import { DataTable } from "../../components/shared/DataTable";
 import { AttendanceQuickViewModal } from "../../components/common/modal/AttendanceQuickViewModal";
 import { AttendanceEditModal } from "../../components/common/modal/AttendanceEditModal";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { AttendanceListCards } from "./AttendanceListCards";
 
 // --- for navigation state coming from User Management ---
 interface AttendanceLocationState {
@@ -109,6 +111,7 @@ const mockAttendance: AttendanceRecord[] = [
 const AttendancePage: React.FC = () => {
   const location = useLocation();
   const state = (location.state || {}) as AttendanceLocationState;
+  const isMobile = useIsMobile();
 
   // core data
   const [records, setRecords] = useState<AttendanceRecord[]>(mockAttendance);
@@ -285,7 +288,6 @@ const AttendancePage: React.FC = () => {
   const processed = useMemo(() => {
     let rows = [...records];
 
-    // deep-link filter: specific employee
     if (selectedEmployeeId) {
       rows = rows.filter((r) => r.employeeId === selectedEmployeeId);
     }
@@ -467,10 +469,11 @@ const AttendancePage: React.FC = () => {
                   setStatusFilter(s === "All" ? "All" : (s as AttendanceStatus));
                   setPage(1);
                 }}
-                className={`rounded-full px-3 py-1 text-[11px] ${statusFilter === s
+                className={`rounded-full px-3 py-1 text-[11px] ${
+                  statusFilter === s
                     ? "bg-blue-600 text-white"
                     : "bg-slate-900 text-slate-200 hover:bg-slate-800"
-                  }`}
+                }`}
               >
                 {s}
               </button>
@@ -493,47 +496,67 @@ const AttendancePage: React.FC = () => {
             <option value="WFO">Work From Office</option>
             <option value="WFH">Work From Home</option>
           </select>
-
         </div>
       </div>
 
-      {/* DataTable */}
-      <DataTable<AttendanceRecord>
-        columns={columns}
-        data={pageData}
-        totalItems={totalItems}
-        page={page}
-        pageSize={pageSize}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        onSortChange={(col, dir) => {
-          setSortBy(col);
-          setSortDirection(dir);
-          setPage(1);
-        }}
-        enableGlobalSearch
-        globalSearchValue={search}
-        onGlobalSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
-        isLoading={false}
-        emptyMessage="No attendance records found."
-        onPageChange={setPage}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPage(1);
-        }}
-        getRowId={(row) => row.id}
-        size="md"
-        enableColumnVisibility
-        enableExport
-        enableFilters={false}
-        onRowClick={(row) => {
-          setQuickViewRecord(row);
-          setQuickViewOpen(true);
-        }}
-      />
+      {/* MOBILE: card list */}
+      {isMobile && (
+        <div className="md:hidden">
+          <AttendanceListCards
+            records={processed}
+            onOpenDetails={(row) => {
+              setQuickViewRecord(row);
+              setQuickViewOpen(true);
+            }}
+            onEdit={(row) => {
+              setEditRecord(row);
+              setEditOpen(true);
+            }}
+          />
+        </div>
+      )}
+
+      {/* DESKTOP: DataTable */}
+      {!isMobile && (
+        <div className="hidden md:block">
+          <DataTable<AttendanceRecord>
+            columns={columns}
+            data={pageData}
+            totalItems={totalItems}
+            page={page}
+            pageSize={pageSize}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSortChange={(col, dir) => {
+              setSortBy(col);
+              setSortDirection(dir);
+              setPage(1);
+            }}
+            enableGlobalSearch
+            globalSearchValue={search}
+            onGlobalSearchChange={(v) => {
+              setSearch(v);
+              setPage(1);
+            }}
+            isLoading={false}
+            emptyMessage="No attendance records found."
+            onPageChange={setPage}
+            onPageSizeChange={(s) => {
+              setPageSize(s);
+              setPage(1);
+            }}
+            getRowId={(row) => row.id}
+            size="md"
+            enableColumnVisibility
+            enableExport
+            enableFilters={false}
+            onRowClick={(row) => {
+              setQuickViewRecord(row);
+              setQuickViewOpen(true);
+            }}
+          />
+        </div>
+      )}
 
       {/* Modals */}
       <AttendanceQuickViewModal

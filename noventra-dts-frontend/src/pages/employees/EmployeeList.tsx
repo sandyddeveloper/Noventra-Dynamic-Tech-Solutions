@@ -1,7 +1,12 @@
+// src/pages/employees/EmployeesPage.tsx
 import { useEffect, useState } from "react";
 import { DataTable } from "../../components/shared/DataTable";
 import type { ColumnDef, SortDirection } from "../../types/datatable.types";
-import { type RowDetailsField, RowDetailsModal } from "../../components/common/modal/RowDetailsModal";
+import {
+  type RowDetailsField,
+  RowDetailsModal,
+} from "../../components/common/modal/RowDetailsModal";
+import { EmployeeListCards } from "./EmployeeListCards";
 
 interface Employee {
   id: string;
@@ -18,7 +23,6 @@ const columns: ColumnDef<Employee>[] = [
   { id: "department", header: "Department", field: "department" },
 ];
 
-// fields to show in the modal (label + how to get value)
 const detailFields: RowDetailsField<Employee>[] = [
   {
     label: "Name",
@@ -51,10 +55,10 @@ export default function EmployeesPage() {
   const [totalItems, setTotalItems] = useState(0);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sortDirection, setSortDirection] =
+    useState<SortDirection>("asc");
   const [loading, setLoading] = useState(false);
 
-  // ⬇️ state for modal
   const [selectedEmployee, setSelectedEmployee] =
     useState<Employee | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -62,9 +66,7 @@ export default function EmployeesPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      // const res = await api.getEmployees({ page, pageSize, search, sortBy, sortDirection });
-      // setData(res.items);
-      // setTotalItems(res.total);
+
       setTimeout(() => {
         const mock: Employee[] = [
           {
@@ -139,6 +141,7 @@ export default function EmployeesPage() {
           },
         ];
 
+        // here you can still apply server-side search/paging later
         setData(mock);
         setTotalItems(mock.length);
         setLoading(false);
@@ -154,12 +157,10 @@ export default function EmployeesPage() {
   };
 
   const handleEdit = (emp: Employee) => {
-    // TODO: navigate to edit page or open edit form
     console.log("Edit employee:", emp);
   };
 
   const handleDelete = (emp: Employee) => {
-    // TODO: confirmation + call delete API
     console.log("Delete employee:", emp);
   };
 
@@ -169,39 +170,51 @@ export default function EmployeesPage() {
         Employees
       </h2>
 
-      <DataTable<Employee>
-        columns={columns}
-        data={data}
-        totalItems={totalItems}
-        page={page}
-        pageSize={pageSize}
-        pageSizeOptions={[10, 25, 50]}
-        sortBy={sortBy || undefined}
-        sortDirection={sortDirection}
-        onSortChange={(col, dir) => {
-          setSortBy(col);
-          setSortDirection(dir);
-          setPage(1);
-        }}
-        enableGlobalSearch
-        globalSearchValue={search}
-        onGlobalSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
-        isLoading={loading}
-        emptyMessage="No employees found."
-        onPageChange={setPage}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPage(1);
-        }}
-        onRowClick={handleRowClick}
-        getRowId={(row) => row.id}
-        size="md"
-      />
+      {/* MOBILE: card list (no table) */}
+      <div className="block md:hidden">
+        <EmployeeListCards
+          employees={data}
+          loading={loading}
+          onItemClick={handleRowClick}
+        />
+      </div>
 
-      {/* Details modal – opens when a row is clicked */}
+      {/* DESKTOP/TABLET: full DataTable */}
+      <div className="hidden md:block">
+        <DataTable<Employee>
+          columns={columns}
+          data={data}
+          totalItems={totalItems}
+          page={page}
+          pageSize={pageSize}
+          pageSizeOptions={[10, 25, 50]}
+          sortBy={sortBy || undefined}
+          sortDirection={sortDirection}
+          onSortChange={(col, dir) => {
+            setSortBy(col);
+            setSortDirection(dir);
+            setPage(1);
+          }}
+          enableGlobalSearch
+          globalSearchValue={search}
+          onGlobalSearchChange={(v) => {
+            setSearch(v);
+            setPage(1);
+          }}
+          isLoading={loading}
+          emptyMessage="No employees found."
+          onPageChange={setPage}
+          onPageSizeChange={(s) => {
+            setPageSize(s);
+            setPage(1);
+          }}
+          onRowClick={handleRowClick}
+          getRowId={(row) => row.id}
+          size="md"
+        />
+      </div>
+
+      {/* DETAILS MODAL – shared for both table rows & cards */}
       <RowDetailsModal<Employee>
         isOpen={detailsOpen}
         item={selectedEmployee}

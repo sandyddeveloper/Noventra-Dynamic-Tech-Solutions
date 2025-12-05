@@ -12,21 +12,29 @@ import {
   Eye,
 } from "lucide-react";
 
-import type {
-  ColumnDef,
-  SortDirection,
-} from "../../types/datatable.types";
+import type { ColumnDef, SortDirection } from "../../types/datatable.types";
 import { DataTable } from "../../components/shared/DataTable";
-import { getEmployeeById, mockDepartments, mockEmployees, mockTeams, type Department, type StatusFilter, type Team } from "../../types/team.types";
+import {
+  getEmployeeById,
+  mockDepartments,
+  mockEmployees,
+  mockTeams,
+  type Department,
+  type StatusFilter,
+  type Team,
+} from "../../types/team.types";
 import { DepartmentModal } from "../../components/common/modal/DepartmentModal";
 import { TeamModal } from "../../components/common/modal/TeamModal";
 import { TeamQuickView } from "./TeamQuickView";
-
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { TeamListCards } from "./TeamListCards";
 
 const DepartmentsTeamsPage: React.FC = () => {
   const [departments, setDepartments] =
     useState<Department[]>(mockDepartments);
   const [teams, setTeams] = useState<Team[]>(mockTeams);
+
+  const isMobile = useIsMobile();
 
   // include pseudo department "Unassigned"
   const UNASSIGNED_ID = "__unassigned";
@@ -146,7 +154,18 @@ const DepartmentsTeamsPage: React.FC = () => {
       teams.flatMap((t) => t.memberIds),
     ).size;
 
-  // DataTable columns (same as before)
+  // delete handler reused for DataTable + cards
+  const handleDeleteTeam = (team: Team) => {
+    if (
+      window.confirm(
+        `Delete team "${team.name}"? This will not delete employees.`,
+      )
+    ) {
+      setTeams((prev) => prev.filter((t) => t.id !== team.id));
+    }
+  };
+
+  // DataTable columns
   const teamColumns: ColumnDef<Team>[] = [
     {
       id: "name",
@@ -200,15 +219,14 @@ const DepartmentsTeamsPage: React.FC = () => {
       sortable: true,
       cell: (team) => (
         <span
-          className={`rounded-full px-2 py-[2px] text-[10px] ${
-            team.status === "Active"
-              ? "bg-emerald-900/70 text-emerald-100"
-              : team.status === "Hiring"
+          className={`rounded-full px-2 py-[2px] text-[10px] ${team.status === "Active"
+            ? "bg-emerald-900/70 text-emerald-100"
+            : team.status === "Hiring"
               ? "bg-blue-900/70 text-blue-100"
               : team.status === "Paused"
-              ? "bg-amber-900/70 text-amber-100"
-              : "bg-slate-800 text-slate-200"
-          }`}
+                ? "bg-amber-900/70 text-amber-100"
+                : "bg-slate-800 text-slate-200"
+            }`}
         >
           {team.status}
         </span>
@@ -272,15 +290,7 @@ const DepartmentsTeamsPage: React.FC = () => {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              if (
-                window.confirm(
-                  `Delete team "${team.name}"? This will not delete employees.`,
-                )
-              ) {
-                setTeams((prev) =>
-                  prev.filter((t) => t.id !== team.id),
-                );
-              }
+              handleDeleteTeam(team);
             }}
             className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-red-300 hover:bg-red-900/60"
             title="Delete team"
@@ -333,9 +343,9 @@ const DepartmentsTeamsPage: React.FC = () => {
       prev.map((t) =>
         t.id === draggingTeamId
           ? {
-              ...t,
-              departmentId: deptId === UNASSIGNED_ID ? "" : deptId,
-            }
+            ...t,
+            departmentId: deptId === UNASSIGNED_ID ? "" : deptId,
+          }
           : t,
       ),
     );
@@ -454,8 +464,8 @@ const DepartmentsTeamsPage: React.FC = () => {
               const depTeams =
                 dep.id === UNASSIGNED_ID
                   ? teams.filter(
-                      (t) => !t.departmentId || t.departmentId === "",
-                    )
+                    (t) => !t.departmentId || t.departmentId === "",
+                  )
                   : teams.filter((t) => t.departmentId === dep.id);
               const depMembers = new Set(
                 depTeams.flatMap((t) => t.memberIds),
@@ -469,13 +479,12 @@ const DepartmentsTeamsPage: React.FC = () => {
                   onDragOver={(e) => handleDeptDragOver(dep.id, e)}
                   onDrop={() => handleDeptDrop(dep.id)}
                   onDragLeave={() => handleDeptDragLeave(dep.id)}
-                  className={`rounded-xl border px-3 py-2 ${
-                    isDragOver
-                      ? "border-blue-500/80 bg-blue-950/40"
-                      : isActive
+                  className={`rounded-xl border px-3 py-2 ${isDragOver
+                    ? "border-blue-500/80 bg-blue-950/40"
+                    : isActive
                       ? "border-blue-500 bg-blue-950/40"
                       : "border-slate-800 bg-slate-950"
-                  }`}
+                    }`}
                 >
                   <button
                     type="button"
@@ -494,8 +503,8 @@ const DepartmentsTeamsPage: React.FC = () => {
                           {head
                             ? `Head · ${head.name}`
                             : dep.id === UNASSIGNED_ID
-                            ? "Drop here to unassign"
-                            : "Head not assigned"}
+                              ? "Drop here to unassign"
+                              : "Head not assigned"}
                         </span>
                         <span className="mt-1 text-[10px] text-slate-500">
                           {depTeams.length} teams · {depMembers} members
@@ -585,7 +594,7 @@ const DepartmentsTeamsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Teams table */}
+        {/* Teams area: card list (mobile) + table (desktop) */}
         <div className="flex flex-col gap-3">
           {/* Teams header + search + status filter */}
           <div className="flex flex-col gap-2 rounded-2xl border border-slate-800 bg-slate-950 px-3 py-3">
@@ -607,25 +616,24 @@ const DepartmentsTeamsPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 {/* status filter chips */}
                 <div className="flex flex-wrap items-center gap-1 text-[11px]">
-                  {(["All", "Active", "Hiring", "Paused", "Archived"] as StatusFilter[]).map(
-                    (status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() => {
-                          setStatusFilter(status);
-                          setPage(1);
-                        }}
-                        className={`rounded-full px-2 py-[3px] ${
-                          statusFilter === status
-                            ? "bg-blue-600 text-white"
-                            : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+                  {(
+                    ["All", "Active", "Hiring", "Paused", "Archived"] as StatusFilter[]
+                  ).map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => {
+                        setStatusFilter(status);
+                        setPage(1);
+                      }}
+                      className={`rounded-full px-2 py-[3px] ${statusFilter === status
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-900 text-slate-300 hover:bg-slate-800"
                         }`}
-                      >
-                        {status}
-                      </button>
-                    ),
-                  )}
+                    >
+                      {status}
+                    </button>
+                  ))}
                 </div>
 
                 {/* search */}
@@ -648,40 +656,61 @@ const DepartmentsTeamsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Teams DataTable */}
-          <DataTable<Team>
-            columns={teamColumns}
-            data={pageTeams}
-            totalItems={totalItems}
-            page={page}
-            pageSize={pageSize}
-            pageSizeOptions={[5, 10, 25]}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            onSortChange={(col, dir) => {
-              setSortBy(col);
-              setSortDirection(dir);
-              setPage(1);
-            }}
-            enableGlobalSearch={false}
-            isLoading={false}
-            emptyMessage={
-              selectedDept
-                ? "No teams in this view yet."
-                : "No teams created."
-            }
-            onPageChange={setPage}
-            onPageSizeChange={(s) => {
-              setPageSize(s);
-              setPage(1);
-            }}
-            getRowId={(row) => row.id}
-            size="md"
-            enableColumnVisibility
-            enableExport
-            enableFilters={false}
-            onRowClick={(row) => setQuickViewTeam(row)}
-          />
+          {/* MOBILE: card list (no pagination) */}
+          {isMobile && (
+            <div className="md:hidden">
+              <TeamListCards
+                teams={filteredTeams}
+                title="Teams (mobile view)"
+                description="Tap a team to view or edit."
+                onQuickView={(team) => setQuickViewTeam(team)}
+                onEdit={(team) => {
+                  setEditingTeam(team);
+                  setTeamModalOpen(true);
+                }}
+                onDelete={handleDeleteTeam}
+              />
+            </div>
+          )}
+
+          {/* DESKTOP: DataTable with pagination */}
+          {!isMobile && (
+            <div className="hidden md:block">
+              <DataTable<Team>
+                columns={teamColumns}
+                data={pageTeams}
+                totalItems={totalItems}
+                page={page}
+                pageSize={pageSize}
+                pageSizeOptions={[5, 10, 25]}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={(col, dir) => {
+                  setSortBy(col);
+                  setSortDirection(dir);
+                  setPage(1);
+                }}
+                enableGlobalSearch={false}
+                isLoading={false}
+                emptyMessage={
+                  selectedDept
+                    ? "No teams in this view yet."
+                    : "No teams created."
+                }
+                onPageChange={setPage}
+                onPageSizeChange={(s) => {
+                  setPageSize(s);
+                  setPage(1);
+                }}
+                getRowId={(row) => row.id}
+                size="md"
+                enableColumnVisibility
+                enableExport
+                enableFilters={false}
+                onRowClick={(row) => setQuickViewTeam(row)}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -716,6 +745,3 @@ const DepartmentsTeamsPage: React.FC = () => {
 };
 
 export default DepartmentsTeamsPage;
-
-
-

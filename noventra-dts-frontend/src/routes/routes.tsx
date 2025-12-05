@@ -22,6 +22,7 @@ import NotificationsPage from "../components/dashboard/notification/Notification
 import EmployeeProfilePage from "../pages/employees/EmployeeProfilePage";
 import ClientManagementPage from "../pages/clients/ClientManagementPage";
 import ClientWorkspacePage from "../pages/clients/ClientWorkspacePage";
+import SettingsPage from "../pages/settings/SettingsPage";
 
 export const routes: RouteObject[] = [
   {
@@ -76,8 +77,13 @@ export const routes: RouteObject[] = [
           },
           {
             path: "clients/:clientId",
-            element: <ClientWorkspacePage />,   // NEW CRM PAGE
+            element: <ClientWorkspacePage />,   
           },
+          {
+            path: "settings",
+            element: <SettingsPage />,
+          }
+
         ],
       },
     ],

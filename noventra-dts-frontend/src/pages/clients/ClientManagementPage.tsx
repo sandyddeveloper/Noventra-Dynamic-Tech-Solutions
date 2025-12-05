@@ -5,7 +5,6 @@ import {
   UserCircle2,
   AlertTriangle,
   BadgeDollarSign,
-  Eye,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +12,8 @@ import type { ColumnDef, SortDirection } from "../../types/datatable.types";
 import type { Client, ClientHealth, ClientTier } from "../../types/client.types";
 import { DataTable } from "../../components/shared/DataTable";
 import { mockClients } from "../../data/mockClients";
-
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { ClientListCards } from "./ClientListCards";
 
 const healthClass: Record<ClientHealth, string> = {
   Healthy: "bg-emerald-900/70 text-emerald-100",
@@ -29,6 +29,7 @@ const tierClass: Record<ClientTier, string> = {
 
 const ClientManagementPage: React.FC = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [clients] = useState<Client[]>(mockClients);
   const [search, setSearch] = useState("");
@@ -82,6 +83,10 @@ const ClientManagementPage: React.FC = () => {
   const avgRisk =
     clients.reduce((sum, c) => sum + c.aiRiskScore, 0) /
     (clients.length || 1);
+
+  const handleOpenWorkspace = (client: Client) => {
+    navigate(`/clients/${client.id}`, { state: { client } });
+  };
 
   const columns: ColumnDef<Client>[] = [
     {
@@ -188,11 +193,10 @@ const ClientManagementPage: React.FC = () => {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/clients/${row.id}`, { state: { client: row } });
+            handleOpenWorkspace(row);
           }}
           className="inline-flex h-7 items-center gap-1 rounded-full bg-slate-900 px-3 text-[11px] text-slate-100 hover:bg-slate-800"
         >
-          <Eye size={13} />
           Open workspace
         </button>
       ),
@@ -254,7 +258,7 @@ const ClientManagementPage: React.FC = () => {
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-800 bg-slate-950 px-3 py-3 text-xs">
         {/* Health filter */}
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <span className="text-[11px] text-slate-400">Health</span>
           {(["All", "Healthy", "At Risk", "Critical"] as const).map((h) => (
             <button
@@ -276,7 +280,7 @@ const ClientManagementPage: React.FC = () => {
         </div>
 
         {/* Tier filter */}
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <span className="text-[11px] text-slate-400">Tier</span>
           {(["All", "Standard", "Premium", "Enterprise"] as const).map((t) => (
             <button
@@ -297,44 +301,69 @@ const ClientManagementPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Search (global uses DataTable search) */}
+        {/* Mobile search input */}
+        <div className="mt-2 w-full sm:mt-0 sm:w-auto sm:ml-auto">
+          <input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Search clients..."
+            className="w-full rounded-full border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-100 outline-none placeholder:text-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 sm:w-64"
+          />
+        </div>
       </div>
 
-      {/* DataTable */}
-      <DataTable<Client>
-        columns={columns}
-        data={pageRows}
-        totalItems={totalItems}
-        page={page}
-        pageSize={pageSize}
-        sortBy={sortBy}
-        sortDirection={sortDirection}
-        onSortChange={(col, dir) => {
-          setSortBy(col);
-          setSortDirection(dir);
-          setPage(1);
-        }}
-        enableGlobalSearch
-        globalSearchValue={search}
-        onGlobalSearchChange={(v) => {
-          setSearch(v);
-          setPage(1);
-        }}
-        onPageChange={setPage}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPage(1);
-        }}
-        getRowId={(row) => row.id}
-        size="md"
-        enableColumnVisibility
-        enableExport
-        enableFilters={false}
-        emptyMessage="No clients match your filters."
-        onRowClick={(row) =>
-          navigate(`/clients/${row.id}`, { state: { client: row } })
-        }
-      />
+      {/* MOBILE: card list (no pagination) */}
+      {isMobile && (
+        <div className="md:hidden">
+          <ClientListCards
+            clients={filtered}
+            title="Clients (mobile view)"
+            description="Tap a client to open their workspace."
+            onOpenWorkspace={handleOpenWorkspace}
+          />
+        </div>
+      )}
+
+      {/* DESKTOP: DataTable with pagination */}
+      {!isMobile && (
+        <div className="hidden md:block">
+          <DataTable<Client>
+            columns={columns}
+            data={pageRows}
+            totalItems={totalItems}
+            page={page}
+            pageSize={pageSize}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSortChange={(col, dir) => {
+              setSortBy(col);
+              setSortDirection(dir);
+              setPage(1);
+            }}
+            enableGlobalSearch
+            globalSearchValue={search}
+            onGlobalSearchChange={(v) => {
+              setSearch(v);
+              setPage(1);
+            }}
+            onPageChange={setPage}
+            onPageSizeChange={(s) => {
+              setPageSize(s);
+              setPage(1);
+            }}
+            getRowId={(row) => row.id}
+            size="md"
+            enableColumnVisibility
+            enableExport
+            enableFilters={false}
+            emptyMessage="No clients match your filters."
+            onRowClick={handleOpenWorkspace}
+          />
+        </div>
+      )}
     </div>
   );
 };

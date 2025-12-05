@@ -74,17 +74,7 @@ export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProp
 
                 {/* Notifications */}
                 <NotificationWidget />
-                {/* <button
-          className="
-            relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 
-            bg-white text-slate-700 shadow-sm hover:bg-slate-50
-            dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800
-          "
-        >
-          <Bell size={16} />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-        </button> */}
-
+                
                 {/* Profile */}
                 <button
                     className="
