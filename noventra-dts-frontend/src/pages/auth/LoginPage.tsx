@@ -96,38 +96,44 @@ export function LoginPage() {
       <div className="relative z-10 flex min-h-screen flex-col px-4 py-4 sm:px-6 md:px-10">
         {/* Top bar with brand + theme toggle */}
         <header className="mb-6 flex items-center justify-between sm:mb-10">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-lg font-black text-white shadow-lg shadow-blue-500/40">
-              N
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 text-lg font-black text-white shadow-lg shadow-blue-500/40 ring-1 ring-white/10">
+              <img
+                src="/icons/logo-512.png"
+                alt="Noventra logo"
+                className="h-10 w-10 object-contain"
+              />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold tracking-wide text-slate-50">
+
+            <div className="flex flex-col leading-tight">
+              <span className="text-xs font-semibold tracking-[0.22em] text-slate-300">
                 NOVENTRA
               </span>
-              <span className="text-[11px] uppercase tracking-[0.15em] text-slate-400">
+              <span className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
                 Dynamic Tech Solutions
               </span>
             </div>
           </div>
 
+          {/* Theme toggle */}
           <button
             type="button"
             onClick={toggleTheme}
-            className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/70 px-3 text-xs font-medium text-slate-200 shadow-sm backdrop-blur hover:border-blue-500 hover:text-blue-100"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/70 px-3 text-xs font-medium text-slate-200 shadow-sm backdrop-blur-sm transition-all hover:border-blue-500 hover:text-blue-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
             {theme === "dark" ? (
               <>
-                <SunMedium size={16} />
-                <span className="hidden sm:inline">Light mode</span>
+                <SunMedium size={16} className="shrink-0" />
               </>
             ) : (
               <>
-                <Moon size={16} />
-                <span className="hidden sm:inline">Dark mode</span>
+                <Moon size={16} className="shrink-0" />
               </>
             )}
           </button>
         </header>
+
 
         {/* Main layout: stacked on mobile, split on md+ */}
         <main className="flex flex-1 flex-col items-center justify-center gap-10 pb-6 pt-2 md:flex-row md:items-center md:justify-between md:pb-10 md:pt-0">
