@@ -1,5 +1,5 @@
 // src/components/dashboard/sidebar/SidebarLink.tsx
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 
 interface SidebarLinkProps {
@@ -15,9 +15,27 @@ export default function SidebarLink({
   path,
   isCollapsed,
 }: SidebarLinkProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault(); // ❌ prevent normal NavLink navigation
+
+    // 🔐 Clear session
+    localStorage.removeItem("lastLoginEmail");
+    localStorage.removeItem("sidebar-collapsed");
+    localStorage.removeItem("lastActiveAt");
+    localStorage.removeItem("authToken"); // if you had one
+
+    // Navigate to login page
+    navigate("/login", { replace: true });
+  };
+
+  const isLogout = path === "/logout";
+
   return (
     <NavLink
       to={path}
+      onClick={isLogout ? handleLogout : undefined}
       className={({ isActive }) =>
         [
           "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all",
@@ -30,7 +48,9 @@ export default function SidebarLink({
       }
     >
       {/* Left active indicator bar */}
-      <span className="absolute inset-y-1 left-0 w-1 rounded-full bg-blue-500 opacity-0 group-[.active]:opacity-100" />
+      {!isLogout && (
+        <span className="absolute inset-y-1 left-0 w-1 rounded-full bg-blue-500 opacity-0 group-[.active]:opacity-100" />
+      )}
 
       <Icon
         size={20}

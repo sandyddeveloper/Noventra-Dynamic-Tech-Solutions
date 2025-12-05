@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
-  role?: string; // Later: UserRole
+  role?: string; 
 }
 
 export default function Sidebar({
