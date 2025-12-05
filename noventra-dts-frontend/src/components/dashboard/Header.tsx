@@ -1,7 +1,8 @@
-// src/components/dashboard/layout/DashboardHeader.tsx
-import { Search, Menu } from "lucide-react";
+
+import { Search } from "lucide-react";
 import { ThemeToggleButton } from "../ui/ToggleButton";
 import { NotificationWidget } from "../../pages/dashboard/widgets/Notifications";
+import { MobileSidebarToggle } from "./MobileSidebarToggle";
 
 interface DashboardHeaderProps {
     onToggleSidebar?: () => void;
@@ -11,25 +12,15 @@ export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProp
     return (
         <header
             className="
-        sticky top-0 z-30 flex items-center justify-between my-1 border-b 
+        sticky top-0 z-30 my-1 flex items-center justify-between border-b 
         bg-white/80 px-3 py-2 backdrop-blur md:px-6
-        dark:bg-slate-950/80 dark:border-slate-800
+        dark:border-slate-800 dark:bg-slate-950/80
       "
         >
             {/* Left part: brand + mobile menu */}
             <div className="flex items-center gap-3">
                 {/* Mobile: toggle sidebar */}
-                <button
-                    className="
-            inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 
-            bg-white text-slate-700 shadow-sm md:hidden
-            hover:bg-slate-50
-            dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800
-          "
-                    onClick={onToggleSidebar}
-                >
-                    <Menu size={18} />
-                </button>
+                <MobileSidebarToggle onToggle={onToggleSidebar} />
 
                 <div className="hidden md:block">
                     <h1 className="text-md font-semibold text-slate-900 dark:text-slate-50">
@@ -61,7 +52,7 @@ export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProp
               dark:text-slate-100 dark:placeholder:text-slate-500
             "
                     />
-                    <span className="hidden text-[10px] text-slate-400 md:inline dark:text-slate-500">
+                    <span className="hidden text-[10px] text-slate-400 dark:text-slate-500 md:inline">
                         ⌘K
                     </span>
                 </div>
@@ -69,12 +60,9 @@ export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProp
 
             {/* Right: theme, notifications, profile */}
             <div className="flex items-center gap-2 md:gap-4">
-                {/* Theme toggle (global) */}
                 <ThemeToggleButton />
-
-                {/* Notifications */}
                 <NotificationWidget />
-                
+
                 {/* Profile */}
                 <button
                     className="

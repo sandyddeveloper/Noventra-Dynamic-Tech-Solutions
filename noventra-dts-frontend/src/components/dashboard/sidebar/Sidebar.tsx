@@ -17,17 +17,18 @@ export default function Sidebar({
 }: SidebarProps) {
   const allowedLinks = useMemo(
     () => sidebarLinks.filter((item) => item.roles.includes(role as any)),
-    [role]
+    [role],
   );
+
   const allowedBottomLinks = useMemo(
     () => sidebarBottomLinks.filter((item) => item.roles.includes(role as any)),
-    [role]
+    [role],
   );
 
   return (
     <aside
       className={[
-        "hidden md:flex h-screen flex-col justify-between border-r bg-white/80 backdrop-blur dark:bg-slate-950/80 h-screen",
+        "flex h-screen flex-col justify-between border-r bg-white/80 backdrop-blur dark:bg-slate-950/80",
         "transition-all duration-300 ease-in-out",
         isCollapsed ? "w-20" : "w-64",
       ].join(" ")}
@@ -58,11 +59,7 @@ export default function Sidebar({
                        border-slate-200 bg-white text-slate-600 shadow-sm
                        hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
           >
-            {isCollapsed ? (
-              <ChevronRight size={16} />
-            ) : (
-              <ChevronLeft size={16} />
-            )}
+            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
 
