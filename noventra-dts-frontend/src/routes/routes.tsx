@@ -23,6 +23,9 @@ import EmployeeProfilePage from "../pages/employees/EmployeeProfilePage";
 import ClientManagementPage from "../pages/clients/ClientManagementPage";
 import ClientWorkspacePage from "../pages/clients/ClientWorkspacePage";
 import SettingsPage from "../pages/settings/SettingsPage";
+import LeaveManagementPage from "../pages/leave/LeaveManagementPage";
+import ShiftPlannerPage from "../pages/shift/ShiftPlannerPage";
+import HolidayCalendarPage from "../pages/holiday/HolidayCalendarPage";
 
 export const routes: RouteObject[] = [
   {
@@ -77,13 +80,24 @@ export const routes: RouteObject[] = [
           },
           {
             path: "clients/:clientId",
-            element: <ClientWorkspacePage />,   
+            element: <ClientWorkspacePage />,
           },
           {
             path: "settings",
             element: <SettingsPage />,
-          }
-
+          },
+          {
+            path: "/leave-management",
+            element: <LeaveManagementPage />,
+          },
+          {
+            path: "/shift-planner",
+            element: <ShiftPlannerPage />,
+          },
+          {
+            path: "/holiday-calendar",
+            element: <HolidayCalendarPage />,
+          },
         ],
       },
     ],

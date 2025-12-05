@@ -13,6 +13,7 @@ import {
   Bell,
   CreditCard,
   LogOut,
+  UserCheck2Icon,
 } from "lucide-react";
 
 export type UserRole =
@@ -49,22 +50,10 @@ export const sidebarLinks: SidebarItem[] = [
     roles: ["super_admin", "team_lead", "employee"],
   },
   {
-    label: "Tasks & Sprints",
-    path: "/tasks",
-    icon: Layers,
-    roles: ["super_admin", "team_lead", "employee"],
-  },
-  {
     label: "Attendance",
     path: "/attendance",
-    icon: CalendarCheck2,
+    icon: Layers,
     roles: ["super_admin", "hr", "employee"],
-  },
-  {
-    label: "Time Tracking",
-    path: "/time-tracking",
-    icon: Clock,
-    roles: ["super_admin", "hr", "team_lead", "employee"],
   },
   {
     label: "Departments & Teams",
@@ -82,6 +71,24 @@ export const sidebarLinks: SidebarItem[] = [
     label: "User Management",
     path: "/users",
     icon: UserCog,
+    roles: ["super_admin"],
+  },
+  {
+    label: "Shift Management",
+    path: "/shift-planner",
+    icon: UserCheck2Icon,
+    roles: ["super_admin"],
+  },
+  {
+    label: "Leave Management",
+    path: "/leave-management",
+    icon: Clock,
+    roles: ["super_admin"],
+  },
+  {
+    label: "Calander",
+    path: "/holiday-calendar",
+    icon: CalendarCheck2,
     roles: ["super_admin"],
   },
 ];
