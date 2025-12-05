@@ -18,7 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import type { AppNotification, NotificationCategory, NotificationImportance, NotificationPreferences, NotificationTab } from "../../../types/notification.types";
 import { NotificationPreferencesDrawer } from "../../common/NotificationPreferencesDrawer";
-import { useNotifications } from "../../../context/NotificationsContext";
+
 
 const mockNotifications: AppNotification[] = [
   {
