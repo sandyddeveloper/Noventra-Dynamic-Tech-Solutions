@@ -3,12 +3,74 @@ import { Search } from "lucide-react";
 import { ThemeToggleButton } from "../ui/ToggleButton";
 import { NotificationWidget } from "../../pages/dashboard/widgets/Notifications";
 import { MobileSidebarToggle } from "./MobileSidebarToggle";
+import { useEffect, useState } from "react";
+import { fetchCurrentUser } from "../../lib/axios/user";
 
 interface DashboardHeaderProps {
     onToggleSidebar?: () => void;
 }
 
+type UserInfo = {
+    id?: number | string;
+    fullName?: string | null;
+    email?: string;
+    roleName?: string | null;
+};
+
 export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProps) {
+    const [user, setUser] = useState<UserInfo | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        fetchCurrentUser()
+            .then((data) => {
+                if (!mounted) return;
+                // normalize keys: backend might return full_name or fullName depending on mapping
+                const normalized = {
+                    id: data.id,
+                    fullName: data.fullName ?? data.full_name ?? data.full_name_camelcase ?? null,
+                    email: data.email,
+                    roleName: data.roleName ?? data.role_name ?? data.role?.name ?? null,
+                };
+                setUser(normalized);
+            })
+            .catch((err) => {
+                console.warn("Could not fetch current user:", err?.response?.data ?? err?.message ?? err);
+                setUser(null);
+            })
+            .finally(() => {
+                if (mounted) setLoading(false);
+            });
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
+    // derive avatar initial from fullName or email
+    const avatarInitial = (() => {
+        if (user?.fullName) {
+            const parts = user.fullName.trim().split(/\s+/);
+            if (parts.length >= 2) {
+                // use first letter of first + last name
+                return (parts[0][0] + (parts[parts.length - 1][0] ?? "")).toUpperCase();
+            }
+            return user.fullName[0].toUpperCase();
+        }
+        if (user?.email) {
+            return user.email.charAt(0).toUpperCase();
+        }
+        return "?";
+    })();
+
+    // nicer role label (SUPER_ADMIN -> Super Admin)
+    const roleLabel = user?.roleName
+        ? user.roleName.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+        : loading
+            ? "Loading..."
+            : "Unknown";
     return (
         <header
             className="
@@ -77,14 +139,14 @@ export default function DashboardHeader({ onToggleSidebar }: DashboardHeaderProp
               bg-gradient-to-br from-blue-500 to-indigo-500 text-xs font-bold text-white
             "
                     >
-                        H
+                        {avatarInitial}
                     </div>
                     <div className="hidden flex-col leading-tight md:flex">
                         <span className="font-semibold text-slate-900 dark:text-slate-50">
-                            Harini
+                            {user?.fullName ?? user?.email ?? (loading ? "Loading..." : "Unknown")}
                         </span>
                         <span className="text-[10px] uppercase tracking-wide text-blue-600 dark:text-blue-300">
-                            Super Admin
+                            {roleLabel}
                         </span>
                     </div>
                 </button>

@@ -1,7 +1,7 @@
 // src/routes/routes.tsx
 import type { RouteObject } from "react-router-dom";
 
-import ProtectedRoute from "./ProtectedRoute";
+// import ProtectedRoute from "./ProtectedRoute";
 
 // AUTH
 import { LoginPage } from "../pages/auth/LoginPage";
@@ -38,7 +38,7 @@ export const routes: RouteObject[] = [
   },
 
   {
-    element: <ProtectedRoute />,
+    // element: <ProtectedRoute />,
     children: [
       {
         path: "/",
