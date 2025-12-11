@@ -1,0 +1,92 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# ---- Django / Project Stuff ----
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+db.sqlite3-journal
+
+# If you use a separate local settings file
+/local_settings.py
+/.env
+.env
+.env.*.local
+
+# Django static & media (only ignore if generated / uploaded and not tracked)
+staticfiles/
+static/
+media/
+
+# ---- Virtual Environments ----
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# ---- IDEs & Editors ----
+
+# VS Code
+.vscode/
+.history/
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# ---- OS files ----
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---- Coverage / Testing ----
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---- Build / Packaging ----
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ---- Migrations (optional, if you don't want to track initially) ----
+# Uncomment below if you want to ignore migrations entirely
+# **/migrations/
+# !**/migrations/__init__.py
