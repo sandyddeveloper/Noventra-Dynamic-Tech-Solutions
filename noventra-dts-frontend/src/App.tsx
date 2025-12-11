@@ -1,15 +1,17 @@
 import { BrowserRouter, useRoutes } from 'react-router-dom'
 import { routes } from './routes/routes'
-// import { AuthProvider } from './context/AuthContext'
+import { AuthProvider } from './hooks/useAuth'
+import "./index.css"
+
 
 const AppRoutes = () => useRoutes(routes)
 
 function App() {
   return (
     <BrowserRouter>
-      {/* <AuthProvider > */}
+      <AuthProvider >
         <AppRoutes />
-      {/* </AuthProvider> */}
+      </AuthProvider>
     </BrowserRouter>
   )
 }

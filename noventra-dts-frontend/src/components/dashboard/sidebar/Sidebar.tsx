@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface SidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
-  role?: string; 
+  role?: string;
 }
 
 export default function Sidebar({
@@ -38,8 +38,8 @@ export default function Sidebar({
         {/* Brand + collapse button */}
         <div className="flex items-center justify-between border-b px-3 py-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white font-bold">
-              N
+            <div className="flex h-10 w-10 pl-2 items-center justify-center rounded-xl">
+              <img src="/logo.svg" alt="" />
             </div>
             {!isCollapsed && (
               <div className="leading-tight">

@@ -1,6 +1,8 @@
+// src/pages/LoginPage.tsx
 import React, { useMemo, useState } from "react";
 import { Mail, Lock, Eye, EyeOff, Moon, SunMedium, Bug } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 type LoginFormState = {
   email: string;
@@ -16,7 +18,8 @@ const initialForm: LoginFormState = {
 
 
 export function LoginPage() {
-
+  const navigate = useNavigate();
+  const { login, refreshUser } = useAuth();
 
   const [form, setForm] = useState<LoginFormState>(initialForm);
   const [showPassword, setShowPassword] = useState(false);
@@ -27,16 +30,19 @@ export function LoginPage() {
 
   const debugEnabled = useMemo(() => {
     try {
-      return import.meta.env.VITE_DEBUG === "1" || import.meta.env.MODE === "development" || localStorage.getItem("noventra_debug") === "1";
+      return (
+        import.meta.env.VITE_DEBUG === "1" ||
+        import.meta.env.MODE === "development" ||
+        localStorage.getItem("noventra_debug") === "1"
+      );
     } catch {
       return import.meta.env.MODE === "development";
     }
   }, []);
 
-
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(debugEnabled);
 
-
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (field: keyof LoginFormState, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -52,25 +58,58 @@ export function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('[LoginPage] handleSubmit start', { email: form.email });
-
     setError(null);
+
     const validationError = validate();
     if (validationError) {
-      console.warn('[LoginPage] validation failed', validationError);
       setError(validationError);
       return;
     }
-  }
 
+    setSubmitting(true);
+    try {
+      // include a short device string (helps server-side session tracking)
+      const device = `${navigator.platform || "web"} ${navigator.userAgent?.split(" ").slice(0,4).join(" ") || ""}`.slice(0,200);
+
+      // login() returns boolean (true = success)
+      const ok = await login(form.email.trim(), form.password, device);
+
+      if (!ok) {
+        // present a helpful message. Backend may return JSON {detail: "..."} but login() returns false on error.
+        setError("Invalid credentials or account not active.");
+        setSubmitting(false);
+        return;
+      }
+
+      // remember-me hint in sessionStorage (actual persistence is server-driven by refresh cookie lifetime)
+      try {
+        if (form.rememberMe) sessionStorage.setItem("noventra_remember", "1");
+        else sessionStorage.removeItem("noventra_remember");
+      } catch {}
+
+      // if backend did not return user payload inside login, try to re-fetch profile
+      try {
+        await refreshUser();
+      } catch { /* ignore */ }
+
+      // navigate to dashboard (replace so login is not in history)
+      navigate("/", { replace: true });
+    } catch (err: any) {
+      // if axios error and backend provides message, show it
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Login failed. Please try again.";
+      setError(String(msg));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const toggleTheme = () => setTheme((prev) => (prev === "light" ? "dark" : "light"));
 
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 lg:px-20">
-      {/* Decorative background omitted for brevity (keep as before) */}
       <div className="relative z-10 flex min-h-screen flex-col px-4 py-4 sm:px-6 md:px-10">
         <header className="mb-6 flex items-center justify-between sm:mb-10">
           <div className="flex items-center gap-3">
@@ -192,12 +231,23 @@ export function LoginPage() {
                   </div>
                 )}
 
-                <button type="submit" className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-sm font-semibold text-white shadow-lg disabled:opacity-60" data-testid="login-submit">
-
-                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Sign In
-
-
+                <button
+                  type="submit"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-sm font-semibold text-white shadow-lg disabled:opacity-60"
+                  data-testid="login-submit"
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <>
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Signing in…
+                    </>
+                  ) : (
+                    <>
+                      <span className="h-3 w-3 rounded-full border-2 border-transparent" />
+                      Sign In
+                    </>
+                  )}
                 </button>
 
                 <div className="mt-1 flex items-center gap-3 text-[11px] text-slate-400">

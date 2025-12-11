@@ -26,6 +26,7 @@ import SettingsPage from "../pages/settings/SettingsPage";
 import LeaveManagementPage from "../pages/leave/LeaveManagementPage";
 import ShiftPlannerPage from "../pages/shift/ShiftPlannerPage";
 import HolidayCalendarPage from "../pages/holiday/HolidayCalendarPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const routes: RouteObject[] = [
   {
@@ -38,7 +39,7 @@ export const routes: RouteObject[] = [
   },
 
   {
-    // element: <ProtectedRoute />,
+    element: <ProtectedRoute />,
     children: [
       {
         path: "/",

@@ -643,7 +643,6 @@ Project data then feeds into dashboards, health, risk, docs, etc.
 Nice, we’re going full “backend brain” mode now 😄
 I’ll treat this as: **how the backend behaves, step-by-step**, for each big flow, with layers and what happens in DB, events, notifications, audit, etc.
 
-I’ll assume a typical stack like **Spring Boot + JPA + Security + Events + Scheduled Jobs** (you can adapt to your exact tech).
 
 ---
 
